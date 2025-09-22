@@ -20,7 +20,6 @@ void main() {
       test(
         'should return Map<String, dynamic> when request is successful',
         () async {
-          // Arrange
           const path = '/test';
           const queryParameters = {'param': 'value'};
           const responseData = {'success': true, 'data': 'test'};
@@ -38,13 +37,11 @@ void main() {
             ),
           ).thenAnswer((_) async => response);
 
-          // Act
           final result = await client.get(
             path,
             queryParameters: queryParameters,
           );
 
-          // Assert
           expect(result, equals(responseData));
           verify(
             () => mockDio.get(path, queryParameters: queryParameters),
@@ -55,7 +52,6 @@ void main() {
       test(
         'should throw ServerException when DioException has response',
         () async {
-          // Arrange
           const path = '/test';
           final dioException = DioException(
             requestOptions: RequestOptions(path: path),
@@ -73,7 +69,6 @@ void main() {
             ),
           ).thenThrow(dioException);
 
-          // Act & Assert
           expect(
             () async => await client.get(path),
             throwsA(
@@ -90,7 +85,6 @@ void main() {
       test(
         'should throw NetworkException when DioException has no response',
         () async {
-          // Arrange
           const path = '/test';
           final dioException = DioException(
             requestOptions: RequestOptions(path: path),
@@ -104,7 +98,6 @@ void main() {
             ),
           ).thenThrow(dioException);
 
-          // Act & Assert
           expect(
             () async => await client.get(path),
             throwsA(isA<NetworkException>()),
@@ -117,7 +110,6 @@ void main() {
       test(
         'should return Map<String, dynamic> when request is successful',
         () async {
-          // Arrange
           const path = '/test';
           const data = {'name': 'test'};
           const queryParameters = {'param': 'value'};
@@ -137,14 +129,12 @@ void main() {
             ),
           ).thenAnswer((_) async => response);
 
-          // Act
           final result = await client.post(
             path,
             data: data,
             queryParameters: queryParameters,
           );
 
-          // Assert
           expect(result, equals(responseData));
           verify(
             () => mockDio.post(
@@ -159,7 +149,6 @@ void main() {
       test(
         'should throw ServerException when DioException has response',
         () async {
-          // Arrange
           const path = '/test';
           const data = {'invalid': 'data'};
           final dioException = DioException(
@@ -179,7 +168,6 @@ void main() {
             ),
           ).thenThrow(dioException);
 
-          // Act & Assert
           expect(
             () async => await client.post(path, data: data),
             throwsA(
@@ -196,7 +184,6 @@ void main() {
       test(
         'should throw NetworkException when DioException has no response',
         () async {
-          // Arrange
           const path = '/test';
           const data = {'name': 'test'};
           final dioException = DioException(
@@ -212,7 +199,6 @@ void main() {
             ),
           ).thenThrow(dioException);
 
-          // Act & Assert
           expect(
             () async => await client.post(path, data: data),
             throwsA(isA<NetworkException>()),
