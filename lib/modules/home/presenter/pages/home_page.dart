@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_default_widget.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_empty_widget.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_error_widget.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_loading_widget.dart';
 import 'package:nubank_test/modules/home/presenter/components/intro_card.dart';
@@ -136,47 +138,7 @@ class _HomeViewState extends State<HomeView> {
 
                 if (state is AliasesLoaded) {
                   if (state.aliases.isEmpty) {
-                    return Container(
-                      padding: const EdgeInsets.all(32),
-                      margin: const EdgeInsets.only(top: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.link_off,
-                            size: 48,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Nenhuma URL encurtada ainda',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[600],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Cole uma URL acima para começar',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                    return AliasEmptyWidget();
                   }
 
                   return Column(
@@ -268,35 +230,7 @@ class _HomeViewState extends State<HomeView> {
                   );
                 }
 
-                return Container(
-                  padding: const EdgeInsets.all(32),
-                  margin: const EdgeInsets.only(top: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Icon(Icons.link_off, size: 48, color: Colors.grey[400]),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Nenhuma URL encurtada ainda',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                return const AliasDefaultWidget();
               },
             ),
           ],
