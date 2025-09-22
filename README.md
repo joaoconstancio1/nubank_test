@@ -199,6 +199,24 @@ flutter test --coverage
 genhtml coverage/lcov.info -o coverage/html
 ```
 
+### 🔧 Script Automatizado de Cobertura
+Para facilitar a geração e visualização da cobertura de testes, utilize o script automatizado:
+```bash
+./tools/coverage.sh
+```
+
+**Este script:**
+- ✅ Executa todos os testes com cobertura
+- ✅ Gera o relatório HTML automaticamente
+- ✅ Abre o relatório no navegador padrão
+- ✅ Funciona em Linux, macOS e Windows
+
+**📋 Pré-requisito:**
+- **lcov** deve estar instalado no sistema:
+  - **Ubuntu/Debian:** `sudo apt-get install lcov`
+  - **macOS:** `brew install lcov`
+  - **Windows:** Instale via [Chocolatey](https://chocolatey.org/) com `choco install lcov` ou use o WSL
+
 ### 🧪 Tipos de Teste Implementados
 - **Unit Tests** - Testes de lógica de negócio
 - **Widget Tests** - Testes de componentes UI
