@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:nubank_test/core/network/http_exceptions.dart';
 import 'package:nubank_test/core/network/custom_http_client.dart';
 import 'package:nubank_test/core/utils/constants.dart';
 
@@ -13,9 +14,12 @@ class DioHttpClient implements CustomHttpClient {
     String path, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    final response = await _dio.get(path, queryParameters: queryParameters);
-
-    return response.data as Map<String, dynamic>;
+    try {
+      final response = await _dio.get(path, queryParameters: queryParameters);
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      _handleDioException(e);
+    }
   }
 
   @override
@@ -24,12 +28,27 @@ class DioHttpClient implements CustomHttpClient {
     Map<String, dynamic>? data,
     Map<String, dynamic>? queryParameters,
   }) async {
-    final response = await _dio.post(
-      path,
-      data: data,
-      queryParameters: queryParameters,
-    );
+    try {
+      final response = await _dio.post(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      _handleDioException(e);
+    }
+  }
 
-    return response.data as Map<String, dynamic>;
+  Never _handleDioException(DioException e) {
+    if (e.response != null) {
+      throw ServerException(
+        'Erro do servidor',
+        statusCode: e.response?.statusCode,
+        data: e.response?.data,
+      );
+    } else {
+      throw NetworkException('Erro de conexão: ${e.message}');
+    }
   }
 }

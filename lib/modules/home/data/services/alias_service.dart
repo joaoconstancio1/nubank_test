@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:nubank_test/core/network/http_exceptions.dart';
 import 'package:nubank_test/core/network/custom_http_client.dart';
 import 'package:nubank_test/core/network/dio_http_client.dart';
 import 'package:nubank_test/modules/home/data/models/alias_model.dart';
@@ -19,15 +19,11 @@ class AliasServiceImpl implements AliasService {
     try {
       final responseData = await _client.post('/alias', data: payload);
       return AliasModel.fromJson(responseData);
+    } on ServerException catch (e) {
+      throw Exception('Erro do servidor: ${e.statusCode} - ${e.message}');
+    } on NetworkException catch (e) {
+      throw Exception('Erro de conexão: ${e.message}');
     } catch (e) {
-      if (e is DioException) {
-        if (e.response != null) {
-          throw Exception(
-            'Erro do servidor: \n ${e.response?.statusCode} \n ${e.response?.data}',
-          );
-        }
-        throw Exception('Erro de conexão: ${e.message}');
-      }
       throw Exception('Erro inesperado: $e');
     }
   }
