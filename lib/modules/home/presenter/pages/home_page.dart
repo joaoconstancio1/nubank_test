@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nubank_test/core/extensions/semantics_extension.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_default_widget.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_empty_widget.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_error_widget.dart';
@@ -47,7 +48,7 @@ class _HomeViewState extends State<HomeView> {
         title: const Text(
           'Encurtador de URL',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
+        ).withSemantics(label: 'Encurtador de URL - Aplicativo principal'),
         backgroundColor: const Color(0xFF8A05BE),
         elevation: 0,
         centerTitle: true,
@@ -63,10 +64,11 @@ class _HomeViewState extends State<HomeView> {
         ),
         child: ListView(
           padding: const EdgeInsets.all(20.0),
+          semanticChildCount: 3,
           children: [
             const SizedBox(height: 20),
 
-            IntroCard(),
+            IntroCard().withSemantics(label: 'Seção de introdução'),
 
             UrlInputCard(
               controller: _controller,
@@ -76,12 +78,17 @@ class _HomeViewState extends State<HomeView> {
                 _controller.clear();
                 FocusScope.of(context).unfocus();
               },
+            ).withSemantics(
+              label: 'Seção de entrada de URL',
+              hint: 'Digite uma URL para encurtar',
             ),
 
             BlocBuilder<AliasCubit, AliasState>(
               builder: (context, state) {
                 if (state is AliasLoading) {
-                  return const AliasLoadingWidget();
+                  return const AliasLoadingWidget().withSemantics(
+                    label: 'Carregando resultado',
+                  );
                 }
 
                 if (state is AliasError) {
@@ -90,23 +97,31 @@ class _HomeViewState extends State<HomeView> {
                     onRetry: () {
                       context.read<AliasCubit>().clearError();
                     },
-                  );
+                  ).withSemantics(label: 'Erro: ${state.message}');
                 }
 
                 if (state is AliasesLoaded) {
                   if (state.aliases.isEmpty) {
-                    return AliasEmptyWidget();
+                    return AliasEmptyWidget().withSemantics(
+                      label: 'Nenhuma URL encurtada ainda',
+                    );
                   }
 
-                  return AliasLoadedWidget(aliases: state.aliases);
+                  return AliasLoadedWidget(
+                    aliases: state.aliases,
+                  ).withSemantics(
+                    label: 'Lista com ${state.aliases.length} URLs encurtadas',
+                  );
                 }
 
-                return const AliasDefaultWidget();
+                return const AliasDefaultWidget().withSemantics(
+                  label: 'Estado inicial - pronto para usar',
+                );
               },
-            ),
+            ).withSemantics(label: 'Seção de resultados'),
           ],
-        ),
-      ),
+        ).withSemantics(label: 'Conteúdo principal'),
+      ).withSemantics(label: 'Tela principal do encurtador de URLs'),
     );
   }
 }
