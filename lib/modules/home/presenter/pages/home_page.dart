@@ -32,11 +32,9 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _controller = TextEditingController();
-  OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
-    _removeLoadingOverlay();
     _controller.dispose();
     super.dispose();
   }
@@ -100,11 +98,7 @@ class _HomeViewState extends State<HomeView> {
                     return AliasEmptyWidget();
                   }
 
-                  return AliasLoadedWidget(
-                    aliases: state.aliases,
-                    showLoadingOverlay: _showLoadingOverlay,
-                    removeLoadingOverlay: _removeLoadingOverlay,
-                  );
+                  return AliasLoadedWidget(aliases: state.aliases);
                 }
 
                 return const AliasDefaultWidget();
@@ -114,45 +108,5 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
     );
-  }
-
-  void _showLoadingOverlay(BuildContext context) {
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          Positioned.fill(
-            child: Container(color: Colors.black.withValues(alpha: 0.7)),
-          ),
-          const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF8A05BE)),
-                  strokeWidth: 3,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Abrindo URL...',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.none,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
-  }
-
-  void _removeLoadingOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
   }
 }

@@ -4,18 +4,12 @@ import 'package:nubank_test/modules/home/data/models/alias_model.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_title.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/core/utils/url_launcher_helper.dart';
+import 'package:nubank_test/core/utils/loading_overlay_service.dart';
 
 class AliasLoadedWidget extends StatelessWidget {
   final List<AliasModel> aliases;
-  final Function(BuildContext) showLoadingOverlay;
-  final VoidCallback removeLoadingOverlay;
 
-  const AliasLoadedWidget({
-    super.key,
-    required this.aliases,
-    required this.showLoadingOverlay,
-    required this.removeLoadingOverlay,
-  });
+  const AliasLoadedWidget({super.key, required this.aliases});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +49,7 @@ class AliasLoadedWidget extends StatelessWidget {
               child: AliasTile(
                 alias: alias,
                 onOpen: () async {
-                  showLoadingOverlay(context);
+                  LoadingOverlay.show(context, message: 'Abrindo URL...');
 
                   final cubit = context.read<AliasCubit>();
                   try {
@@ -87,7 +81,7 @@ class AliasLoadedWidget extends StatelessWidget {
                       );
                     }
                   } finally {
-                    removeLoadingOverlay();
+                    LoadingOverlay.hide();
                   }
                 },
               ),
