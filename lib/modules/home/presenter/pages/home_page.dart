@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_state.dart';
 import 'package:nubank_test/modules/home/presenter/pages/alias_title.dart';
-import 'package:nubank_test/modules/home/presenter/pages/webview_page.dart';
+import 'package:nubank_test/core/utils/url_launcher_helper.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -362,17 +362,16 @@ class _HomeViewState extends State<HomeView> {
                               onOpen: () async {
                                 final cubit = context.read<AliasCubit>();
                                 try {
-                                  // Busca a URL original usando o alias
                                   final originalUrl = await cubit
                                       .getOriginalUrl(alias.alias);
 
-                                  // Abre a URL no navegador interno
-                                  await WebViewHelper.openUrl(
-                                    context,
-                                    originalUrl,
-                                  );
+                                  if (context.mounted) {
+                                    await UrlLauncherHelper.openUrl(
+                                      context,
+                                      originalUrl,
+                                    );
+                                  }
                                 } catch (e) {
-                                  // Mostra erro se não conseguir buscar/abrir a URL
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

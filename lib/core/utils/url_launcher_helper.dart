@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class WebViewHelper {
+class UrlLauncherHelper {
   static Future<void> openUrl(BuildContext context, String url) async {
     try {
-      // Adiciona protocolo se não tiver
       String finalUrl = url;
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         finalUrl = 'https://$url';
