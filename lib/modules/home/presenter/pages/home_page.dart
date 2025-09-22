@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_error_widget.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_loading_widget.dart';
+import 'package:nubank_test/modules/home/presenter/components/intro_card.dart';
+import 'package:nubank_test/modules/home/presenter/components/url_input_card.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_state.dart';
-import 'package:nubank_test/modules/home/presenter/pages/alias_title.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_title.dart';
 import 'package:nubank_test/core/utils/url_launcher_helper.dart';
 
 class HomePage extends StatelessWidget {
@@ -103,227 +107,30 @@ class _HomeViewState extends State<HomeView> {
           children: [
             const SizedBox(height: 20),
 
-            Container(
-              padding: const EdgeInsets.all(24),
-              margin: const EdgeInsets.only(bottom: 32),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF8A05BE).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.link,
-                      size: 32,
-                      color: Color(0xFF8A05BE),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Transforme seus links longos em URLs curtas e elegantes',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            IntroCard(),
 
-            Container(
-              padding: const EdgeInsets.all(24),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Cole sua URL aqui',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF333333),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      hintText: 'https://exemplo.com/sua-url-muito-longa',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF8A05BE),
-                          width: 2,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      contentPadding: const EdgeInsets.all(16),
-                    ),
-                    keyboardType: TextInputType.url,
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final cubit = context.read<AliasCubit>();
-                        cubit.shorten(_controller.text);
-                        _controller.clear();
-                        FocusScope.of(context).unfocus();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF8A05BE),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.content_cut, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'Encurtar URL',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            UrlInputCard(
+              controller: _controller,
+              onShorten: () {
+                final cubit = context.read<AliasCubit>();
+                cubit.shorten(_controller.text);
+                _controller.clear();
+                FocusScope.of(context).unfocus();
+              },
             ),
 
             BlocBuilder<AliasCubit, AliasState>(
               builder: (context, state) {
                 if (state is AliasLoading) {
-                  return Container(
-                    padding: const EdgeInsets.all(32),
-                    margin: const EdgeInsets.only(top: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Column(
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFF8A05BE),
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Encurtando sua URL...',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  );
+                  return const AliasLoadingWidget();
                 }
 
                 if (state is AliasError) {
-                  return Container(
-                    padding: const EdgeInsets.all(24),
-                    margin: const EdgeInsets.only(top: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.red[300]!),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          color: Colors.red[400],
-                          size: 48,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Ops! Algo deu errado',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.red[700],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          state.message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.red[600],
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.read<AliasCubit>().clearError(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red[400],
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: const Text('Tentar novamente'),
-                        ),
-                      ],
-                    ),
+                  return AliasErrorWidget(
+                    message: state.message,
+                    onRetry: () {
+                      context.read<AliasCubit>().clearError();
+                    },
                   );
                 }
 
