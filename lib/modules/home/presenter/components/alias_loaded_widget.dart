@@ -4,7 +4,7 @@ import 'package:nubank_test/modules/home/data/models/alias_model.dart';
 import 'package:nubank_test/modules/home/presenter/components/alias_title.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/core/utils/url_launcher_helper.dart';
-import 'package:nubank_test/core/utils/loading_overlay_service.dart';
+import 'package:nubank_test/core/utils/loading_overlay.dart';
 
 class AliasLoadedWidget extends StatelessWidget {
   final List<AliasModel> aliases;
