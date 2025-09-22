@@ -1,12 +1,10 @@
-class AliasModel {
-  final String alias;
-  final String original;
-  final String short;
+import 'package:nubank_test/modules/home/domain/entities/alias_entity.dart';
 
-  AliasModel({
-    required this.alias,
-    required this.original,
-    required this.short,
+class AliasModel extends AliasEntity {
+  const AliasModel({
+    required super.alias,
+    required super.original,
+    required super.short,
   });
 
   factory AliasModel.fromJson(Map<String, dynamic> json) {

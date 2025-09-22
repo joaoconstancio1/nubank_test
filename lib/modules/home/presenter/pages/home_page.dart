@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_state.dart';
 import 'package:nubank_test/modules/home/presenter/pages/alias_title.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => AliasCubit(GetIt.I()),
+      child: const HomeView(),
+    );
+  }
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   final TextEditingController _controller = TextEditingController();
 
   @override
