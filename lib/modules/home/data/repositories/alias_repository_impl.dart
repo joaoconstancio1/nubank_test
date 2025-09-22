@@ -11,4 +11,9 @@ class AliasRepositoryImpl implements AliasRepository {
   Future<AliasModel> createAlias(String url) {
     return service.createAlias(url);
   }
+
+  @override
+  Future<String> getOriginalUrl(String aliasId) {
+    return service.getOriginalUrl(aliasId);
+  }
 }

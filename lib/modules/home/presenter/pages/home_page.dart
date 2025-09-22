@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_state.dart';
 import 'package:nubank_test/modules/home/presenter/pages/alias_title.dart';
+import 'package:nubank_test/modules/home/presenter/pages/webview_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -359,30 +359,48 @@ class _HomeViewState extends State<HomeView> {
                             ),
                             child: AliasTile(
                               alias: alias,
-                              onCopy: () async {
-                                final messenger = ScaffoldMessenger.of(context);
-                                await Clipboard.setData(
-                                  ClipboardData(text: alias.short),
-                                );
-                                messenger.showSnackBar(
-                                  SnackBar(
-                                    content: const Row(
-                                      children: [
-                                        Icon(
-                                          Icons.check_circle,
-                                          color: Colors.white,
+                              onOpen: () async {
+                                final cubit = context.read<AliasCubit>();
+                                try {
+                                  // Busca a URL original usando o alias
+                                  final originalUrl = await cubit
+                                      .getOriginalUrl(alias.alias);
+
+                                  // Abre a URL no navegador interno
+                                  await WebViewHelper.openUrl(
+                                    context,
+                                    originalUrl,
+                                  );
+                                } catch (e) {
+                                  // Mostra erro se não conseguir buscar/abrir a URL
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.error_outline,
+                                              color: Colors.white,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                'Erro ao abrir URL: $e',
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(width: 8),
-                                        Text('URL copiada com sucesso!'),
-                                      ],
-                                    ),
-                                    backgroundColor: const Color(0xFF8A05BE),
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                );
+                                        backgroundColor: Colors.red,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
                               },
                             ),
                           );

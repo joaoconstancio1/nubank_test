@@ -32,4 +32,12 @@ class AliasCubit extends Cubit<AliasState> {
       }
     }
   }
+
+  Future<String> getOriginalUrl(String aliasId) async {
+    try {
+      return await _repository.getOriginalUrl(aliasId);
+    } catch (e) {
+      throw Exception('Erro ao buscar URL original: $e');
+    }
+  }
 }
