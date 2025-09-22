@@ -17,14 +17,14 @@ class AliasService {
       if (resp.statusCode == 201 || resp.statusCode == 200) {
         return AliasModel.fromJson(resp.data as Map<String, dynamic>);
       }
-      throw Exception('Erro ao encurtar a URL: HTTP \${resp.statusCode}');
-    } on DioError catch (e) {
+      throw Exception('Erro ao encurtar a URL: HTTP ${resp.statusCode}');
+    } on DioException catch (e) {
       if (e.response != null) {
         throw Exception(
-          'Erro do servidor: \${e.response?.statusCode} \${e.response?.data}',
+          'Erro do servidor: \n ${e.response?.statusCode} \n ${e.response?.data}',
         );
       }
-      throw Exception('Erro de conexão: \${e.message}');
+      throw Exception('Erro de conexão: ${e.message}');
     }
   }
 }

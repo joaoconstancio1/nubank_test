@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(title: const Text('Nubank URL Shortener')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
             TextField(
               controller: _controller,
@@ -43,46 +43,60 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            Expanded(
-              child: BlocBuilder<AliasCubit, AliasState>(
-                builder: (context, state) {
-                  if (state.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.error != null) {
-                    return Column(
-                      children: [
-                        Text('Erro: ${state.error}'),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.read<AliasCubit>().clearError(),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  }
+            BlocBuilder<AliasCubit, AliasState>(
+              builder: (context, state) {
+                if (state is AliasLoading) {
+                  return const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+
+                if (state is AliasError) {
+                  return Column(
+                    children: [
+                      Text('Erro: ${state.message}'),
+                      ElevatedButton(
+                        onPressed: () =>
+                            context.read<AliasCubit>().clearError(),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  );
+                }
+
+                if (state is AliasesLoaded) {
                   if (state.aliases.isEmpty) {
-                    return const Center(
-                      child: Text('Nenhum alias gerado ainda'),
+                    return const SizedBox(
+                      height: 200,
+                      child: Center(child: Text('Nenhum alias gerado ainda')),
                     );
                   }
                   return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: state.aliases.length,
                     itemBuilder: (context, index) {
                       final a = state.aliases[index];
                       return AliasTile(
                         alias: a,
                         onCopy: () async {
+                          final messenger = ScaffoldMessenger.of(context);
                           await Clipboard.setData(ClipboardData(text: a.short));
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             const SnackBar(content: Text('Curta copiada')),
                           );
                         },
                       );
                     },
                   );
-                },
-              ),
+                }
+
+                return const SizedBox(
+                  height: 200,
+                  child: Center(child: Text('Nenhum alias gerado ainda')),
+                );
+              },
             ),
           ],
         ),

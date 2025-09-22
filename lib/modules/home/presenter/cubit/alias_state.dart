@@ -1,21 +1,32 @@
+import 'package:equatable/equatable.dart';
 import 'package:nubank_test/modules/home/data/models/alias_model.dart';
 
-class AliasState {
+abstract class AliasState extends Equatable {}
+
+class AliasInitial extends AliasState {
+  @override
+  List<Object?> get props => [];
+}
+
+class AliasLoading extends AliasState {
+  @override
+  List<Object?> get props => [];
+}
+
+class AliasesLoaded extends AliasState {
   final List<AliasModel> aliases;
-  final bool loading;
-  final String? error;
 
-  AliasState({required this.aliases, this.loading = false, this.error});
+  AliasesLoaded(this.aliases);
 
-  AliasState copyWith({
-    List<AliasModel>? aliases,
-    bool? loading,
-    String? error,
-  }) {
-    return AliasState(
-      aliases: aliases ?? this.aliases,
-      loading: loading ?? this.loading,
-      error: error,
-    );
-  }
+  @override
+  List<Object?> get props => [aliases];
+}
+
+class AliasError extends AliasState {
+  final String message;
+
+  AliasError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
