@@ -16,6 +16,17 @@ void main() {
   });
 
   group('DioHttpClient', () {
+    test('should create instance with default Dio when no Dio provided', () {
+      final client = DioHttpClient();
+      expect(client, isA<DioHttpClient>());
+    });
+
+    test('should create instance with provided Dio', () {
+      final customDio = MockDio();
+      final client = DioHttpClient(dio: customDio);
+      expect(client, isA<DioHttpClient>());
+    });
+
     group('get', () {
       test(
         'should return Map<String, dynamic> when request is successful',

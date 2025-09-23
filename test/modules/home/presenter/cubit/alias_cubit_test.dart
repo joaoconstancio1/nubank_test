@@ -104,6 +104,34 @@ void main() {
       );
 
       blocTest<AliasCubit, AliasState>(
+        'should emit AliasesLoaded when there are aliases and current state is error',
+        build: () {
+          when(() => mockRepository.createAlias(any())).thenAnswer(
+            (_) async => const AliasModel(
+              alias: 'test123',
+              original: 'https://example.com',
+              short: 'https://short.ly/test123',
+            ),
+          );
+          return cubit;
+        },
+        act: (cubit) async {
+          // First, add an alias to populate _aliases list
+          await cubit.shorten('https://example.com');
+          // Then emit an error
+          cubit.emit(AliasError('Some error'));
+          // Now call clearError - this should emit AliasesLoaded with the existing aliases
+          cubit.clearError();
+        },
+        expect: () => [
+          isA<AliasLoading>(),
+          isA<AliasesLoaded>(),
+          isA<AliasError>(),
+          isA<AliasesLoaded>(),
+        ],
+      );
+
+      blocTest<AliasCubit, AliasState>(
         'should not emit any state when current state is not error',
         build: () => cubit,
         seed: () => AliasInitial(),

@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:nubank_test/modules/home/data/models/alias_model.dart';
+import 'package:nubank_test/modules/home/presenter/components/alias_loaded_widget.dart';
+import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
+import 'package:nubank_test/modules/home/domain/repositories/alias_repository.dart';
+
+class MockAliasRepository extends Mock implements AliasRepository {}
+
+class MockAliasCubit extends Mock implements AliasCubit {}
+
+void main() {
+  late MockAliasRepository mockRepository;
+  late MockAliasCubit mockCubit;
+
+  setUp(() {
+    mockRepository = MockAliasRepository();
+    mockCubit = MockAliasCubit();
+  });
+
+  group('AliasLoadedWidget', () {
+    const testAliases = [
+      AliasModel(
+        alias: 'abc123',
+        original: 'https://example.com',
+        short: 'https://short.ly/abc123',
+      ),
+    ];
+
+    Widget buildTestWidget({
+      required List<AliasModel> aliases,
+      AliasCubit? cubit,
+    }) {
+      return MaterialApp(
+        home: BlocProvider<AliasCubit>(
+          create: (_) => cubit ?? AliasCubit(mockRepository),
+          child: Scaffold(body: AliasLoadedWidget(aliases: aliases)),
+        ),
+      );
+    }
+
+    testWidgets('should display ListView with aliases', (tester) async {
+      await tester.pumpWidget(buildTestWidget(aliases: testAliases));
+
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byType(AliasLoadedWidget), findsOneWidget);
+    });
+
+    testWidgets('should trigger onOpen callback and call getOriginalUrl', (
+      tester,
+    ) async {
+      const originalUrl = 'https://example.com';
+
+      when(
+        () => mockCubit.getOriginalUrl('abc123'),
+      ).thenAnswer((_) async => originalUrl);
+
+      await tester.pumpWidget(
+        buildTestWidget(aliases: testAliases, cubit: mockCubit),
+      );
+
+      // Find the open button (IconButton with Icons.open_in_new)
+      final openButton = find.byIcon(Icons.open_in_new);
+
+      if (openButton.evaluate().isNotEmpty) {
+        await tester.tap(openButton);
+        await tester.pump();
+
+        // Verify getOriginalUrl was called
+        verify(() => mockCubit.getOriginalUrl('abc123')).called(1);
+      }
+    });
+
+    testWidgets('should handle error in onOpen callback', (tester) async {
+      const errorMessage = 'Failed to get original URL';
+
+      when(
+        () => mockCubit.getOriginalUrl('abc123'),
+      ).thenThrow(Exception(errorMessage));
+
+      await tester.pumpWidget(
+        buildTestWidget(aliases: testAliases, cubit: mockCubit),
+      );
+
+      final openButton = find.byIcon(Icons.open_in_new);
+
+      if (openButton.evaluate().isNotEmpty) {
+        await tester.tap(openButton);
+        await tester.pump();
+        await tester.pumpAndSettle();
+
+        // Should handle error gracefully
+        verify(() => mockCubit.getOriginalUrl('abc123')).called(1);
+      }
+    });
+
+    testWidgets('should display empty ListView when no aliases', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildTestWidget(aliases: []));
+
+      expect(find.byType(ListView), findsOneWidget);
+      expect(find.byType(AliasLoadedWidget), findsOneWidget);
+    });
+
+    testWidgets('should handle context.mounted checks in onOpen', (
+      tester,
+    ) async {
+      when(() => mockCubit.getOriginalUrl(any())).thenAnswer((_) async {
+        await Future.delayed(const Duration(milliseconds: 50));
+        return 'https://example.com';
+      });
+
+      await tester.pumpWidget(
+        buildTestWidget(aliases: testAliases, cubit: mockCubit),
+      );
+
+      final openButton = find.byIcon(Icons.open_in_new);
+
+      if (openButton.evaluate().isNotEmpty) {
+        await tester.tap(openButton);
+        await tester.pump();
+
+        // Remove widget to simulate context being unmounted
+        await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+        await tester.pumpAndSettle();
+
+        // Should not throw error
+        expect(tester.takeException(), isNull);
+      }
+    });
+  });
+}

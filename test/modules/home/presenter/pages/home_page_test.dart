@@ -247,6 +247,41 @@ void main() {
     });
 
     testWidgets(
+      'should call clearError through onRetry callback in real HomeView context',
+      (tester) async {
+        final testCubit = AliasCubit(mockRepository);
+        await tester.pumpWidget(buildTestWidget(cubit: testCubit));
+
+        // Emit error state to show error widget with retry button
+        testCubit.emit(AliasError('Network error'));
+        await tester.pump();
+
+        // Verify error widget is displayed
+        expect(find.byType(AliasErrorWidget), findsOneWidget);
+
+        // Find the retry button within the error widget
+        final retryButton = find.descendant(
+          of: find.byType(AliasErrorWidget),
+          matching: find.byType(ElevatedButton),
+        );
+        expect(retryButton, findsOneWidget);
+
+        // Ensure button is visible by scrolling if needed
+        await tester.ensureVisible(retryButton);
+        await tester.pumpAndSettle();
+
+        // Tap the retry button - this should call context.read<AliasCubit>().clearError()
+        await tester.tap(retryButton);
+        await tester.pump();
+
+        // Verify state changed back to initial (since no aliases exist)
+        expect(testCubit.state, isA<AliasInitial>());
+
+        testCubit.close();
+      },
+    );
+
+    testWidgets(
       'should call clearError when retry is pressed on error widget',
       (tester) async {
         final testCubit = AliasCubit(mockRepository);
