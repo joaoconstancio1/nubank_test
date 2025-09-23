@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:nubank_test/core/utils/url_launcher_helper.dart';
+
+class MockUrlLauncherPlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements UrlLauncherPlatform {}
 
 void main() {
   group('UrlLauncherHelper', () {
@@ -542,6 +549,148 @@ void main() {
         // Should handle all URLs gracefully
         expect(tester.takeException(), isNull);
       }
+    });
+
+    group('URL Launcher Mocked Tests for Coverage', () {
+      late MockUrlLauncherPlatform mockUrlLauncherPlatform;
+
+      setUp(() {
+        mockUrlLauncherPlatform = MockUrlLauncherPlatform();
+        UrlLauncherPlatform.instance = mockUrlLauncherPlatform;
+        
+        // Setup fallback values for mocktail
+        registerFallbackValue(const LaunchOptions());
+      });
+
+      tearDown(() {
+        reset(mockUrlLauncherPlatform);
+      });
+
+      testWidgets('should execute launchUrl when canLaunchUrl returns true', (
+        WidgetTester tester,
+      ) async {
+        const url = 'https://www.example.com';
+        
+        // Mock canLaunchUrl to return true
+        when(() => mockUrlLauncherPlatform.canLaunch(any()))
+            .thenAnswer((_) async => true);
+        
+        // Mock launchUrl to succeed
+        when(() => mockUrlLauncherPlatform.launchUrl(any(), any()))
+            .thenAnswer((_) async => true);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      await UrlLauncherHelper.openUrl(context, url);
+                    },
+                    child: const Text('Open URL'),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pumpAndSettle();
+
+        // Verify canLaunchUrl was called
+        verify(() => mockUrlLauncherPlatform.canLaunch(any())).called(1);
+        // Verify launchUrl was called (this covers line 15)
+        verify(() => mockUrlLauncherPlatform.launchUrl(any(), any())).called(1);
+        
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('should throw exception when canLaunchUrl returns false', (
+        WidgetTester tester,
+      ) async {
+        const url = 'https://www.example.com';
+        
+        // Mock canLaunchUrl to return false
+        when(() => mockUrlLauncherPlatform.canLaunch(any()))
+            .thenAnswer((_) async => false);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      await UrlLauncherHelper.openUrl(context, url);
+                    },
+                    child: const Text('Open URL'),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pumpAndSettle();
+
+        // Verify canLaunchUrl was called
+        verify(() => mockUrlLauncherPlatform.canLaunch(any())).called(1);
+        // Verify launchUrl was never called since canLaunchUrl returned false
+        verifyNever(() => mockUrlLauncherPlatform.launchUrl(any(), any()));
+        
+        // Should show SnackBar with error message due to exception (covers lines 17, 20-27)
+        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.text('Erro ao abrir URL: Exception: Não foi possível abrir a URL: https://www.example.com'), findsOneWidget);
+        
+        expect(tester.takeException(), isNull);
+      });
+
+      testWidgets('should show error SnackBar when launchUrl throws exception', (
+        WidgetTester tester,
+      ) async {
+        const url = 'https://www.example.com';
+        
+        // Mock canLaunchUrl to return true
+        when(() => mockUrlLauncherPlatform.canLaunch(any()))
+            .thenAnswer((_) async => true);
+        
+        // Mock launchUrl to throw an exception
+        when(() => mockUrlLauncherPlatform.launchUrl(any(), any()))
+            .thenThrow(Exception('Launch failed'));
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      await UrlLauncherHelper.openUrl(context, url);
+                    },
+                    child: const Text('Open URL'),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pumpAndSettle();
+
+        // Verify both methods were called
+        verify(() => mockUrlLauncherPlatform.canLaunch(any())).called(1);
+        verify(() => mockUrlLauncherPlatform.launchUrl(any(), any())).called(1);
+        
+        // Should show SnackBar with error message (covers lines 20-27)
+        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.textContaining('Erro ao abrir URL:'), findsOneWidget);
+        
+        expect(tester.takeException(), isNull);
+      });
     });
   });
 }
