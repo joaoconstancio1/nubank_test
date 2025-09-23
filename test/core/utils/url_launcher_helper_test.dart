@@ -303,41 +303,45 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('should display SnackBar with error when URL cannot be launched', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                return ElevatedButton(
-                  onPressed: () async {
-                    // Force an error by using a malformed URL that will cause Uri.parse to fail
-                    await UrlLauncherHelper.openUrl(context, 'ht tp://invalid url with spaces');
-                  },
-                  child: const Text('Open Invalid URL'),
-                );
-              },
+    testWidgets(
+      'should display SnackBar with error when URL cannot be launched',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  return ElevatedButton(
+                    onPressed: () async {
+                      // Force an error by using a malformed URL that will cause Uri.parse to fail
+                      await UrlLauncherHelper.openUrl(
+                        context,
+                        'ht tp://invalid url with spaces',
+                      );
+                    },
+                    child: const Text('Open Invalid URL'),
+                  );
+                },
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pumpAndSettle();
 
-      // The method should handle the error gracefully without throwing
-      expect(tester.takeException(), isNull);
-      
-      // Check if SnackBar is shown
-      if (find.byType(SnackBar).evaluate().isNotEmpty) {
-        final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
-        expect(snackBar.backgroundColor, Colors.red);
-        expect(snackBar.behavior, SnackBarBehavior.floating);
-        expect(snackBar.shape, isA<RoundedRectangleBorder>());
-      }
-    });
+        // The method should handle the error gracefully without throwing
+        expect(tester.takeException(), isNull);
+
+        // Check if SnackBar is shown
+        if (find.byType(SnackBar).evaluate().isNotEmpty) {
+          final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
+          expect(snackBar.backgroundColor, Colors.red);
+          expect(snackBar.behavior, SnackBarBehavior.floating);
+          expect(snackBar.shape, isA<RoundedRectangleBorder>());
+        }
+      },
+    );
 
     testWidgets('should handle URL that canLaunchUrl returns false for', (
       WidgetTester tester,
@@ -350,7 +354,10 @@ void main() {
                 return ElevatedButton(
                   onPressed: () async {
                     // Use a scheme that typically can't be launched
-                    await UrlLauncherHelper.openUrl(context, 'invalid-scheme://test');
+                    await UrlLauncherHelper.openUrl(
+                      context,
+                      'invalid-scheme://test',
+                    );
                   },
                   child: const Text('Open Unsupported URL'),
                 );
@@ -412,7 +419,7 @@ void main() {
       expect(snackBar.backgroundColor, Colors.red);
       expect(snackBar.behavior, SnackBarBehavior.floating);
       expect(snackBar.shape, isA<RoundedRectangleBorder>());
-      
+
       final shape = snackBar.shape as RoundedRectangleBorder;
       expect(shape.borderRadius, BorderRadius.circular(8));
     });
@@ -428,7 +435,10 @@ void main() {
                 return ElevatedButton(
                   onPressed: () async {
                     // Test with a well-formed URL that would normally be valid
-                    await UrlLauncherHelper.openUrl(context, 'https://www.google.com');
+                    await UrlLauncherHelper.openUrl(
+                      context,
+                      'https://www.google.com',
+                    );
                   },
                   child: const Text('Open Valid URL'),
                 );
@@ -459,7 +469,9 @@ void main() {
                     // Directly test error handling path by simulating the exact error flow
                     try {
                       // This will cause a format exception, exercising the catch block
-                      Uri.parse('ht tp://invalid url with spaces and [invalid] characters');
+                      Uri.parse(
+                        'ht tp://invalid url with spaces and [invalid] characters',
+                      );
                     } catch (e) {
                       // Manually trigger the same SnackBar code path as UrlLauncherHelper
                       if (context.mounted) {
@@ -500,10 +512,10 @@ void main() {
     ) async {
       // Test multiple URL scenarios that could trigger different code paths
       const testUrls = [
-        'ftp://files.example.com',  // Different protocol
-        'file:///local/path',       // Local file
-        'custom-scheme://data',     // Custom scheme
-        'mailto:test@example.com',  // Email scheme
+        'ftp://files.example.com', // Different protocol
+        'file:///local/path', // Local file
+        'custom-scheme://data', // Custom scheme
+        'mailto:test@example.com', // Email scheme
       ];
 
       for (final url in testUrls) {
