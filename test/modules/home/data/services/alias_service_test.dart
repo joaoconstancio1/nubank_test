@@ -17,6 +17,12 @@ void main() {
   });
 
   group('AliasServiceImpl', () {
+    test('should use DioHttpClient as default when no client is provided', () {
+      final service = AliasServiceImpl();
+
+      expect(service, isA<AliasServiceImpl>());
+    });
+
     group('createAlias', () {
       test('should return AliasModel when request is successful', () async {
         const url = 'https://example.com';
