@@ -8,8 +8,9 @@ import 'package:nubank_test/core/utils/loading_overlay.dart';
 
 class AliasLoadedWidget extends StatelessWidget {
   final List<AliasModel> aliases;
+  final Function(BuildContext, AliasModel)? onOpenUrl;
 
-  const AliasLoadedWidget({super.key, required this.aliases});
+  const AliasLoadedWidget({super.key, required this.aliases, this.onOpenUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -48,47 +49,50 @@ class AliasLoadedWidget extends StatelessWidget {
               ),
               child: AliasTile(
                 alias: alias,
-                onOpen: () async {
-                  LoadingOverlay.show(context, message: 'Abrindo URL...');
-
-                  final cubit = context.read<AliasCubit>();
-                  try {
-                    final originalUrl = await cubit.getOriginalUrl(alias.alias);
-
-                    if (context.mounted) {
-                      await UrlLauncherHelper.openUrl(context, originalUrl);
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Row(
-                            children: [
-                              const Icon(
-                                Icons.error_outline,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(child: Text('Erro ao abrir URL: $e')),
-                            ],
-                          ),
-                          backgroundColor: Colors.red,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      );
-                    }
-                  } finally {
-                    LoadingOverlay.hide();
-                  }
-                },
+                onOpen: onOpenUrl != null
+                    ? () => onOpenUrl!(context, alias)
+                    : () => _handleOpenUrl(context, alias),
               ),
             );
           },
         ),
       ],
+    );
+  }
+
+  Future<void> _handleOpenUrl(BuildContext context, AliasModel alias) async {
+    LoadingOverlay.show(context, message: 'Abrindo URL...');
+
+    final cubit = context.read<AliasCubit>();
+    try {
+      final originalUrl = await cubit.getOriginalUrl(alias.alias);
+
+      if (context.mounted) {
+        await UrlLauncherHelper.openUrl(context, originalUrl);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _showErrorSnackBar(context, e.toString());
+      }
+    } finally {
+      LoadingOverlay.hide();
+    }
+  }
+
+  void _showErrorSnackBar(BuildContext context, String error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text('Erro ao abrir URL: $error')),
+          ],
+        ),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 }
