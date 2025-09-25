@@ -1,6 +1,7 @@
 // Sugestão de nome: UrlInputCard
 
 import 'package:flutter/material.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class UrlInputCard extends StatelessWidget {
   final TextEditingController controller;
@@ -15,77 +16,80 @@ class UrlInputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(SpacingTokens.paddingLg),
+      margin: EdgeInsets.only(bottom: SpacingTokens.marginSm),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: ColorTokens.surfacePrimary,
+        borderRadius: BorderRadiusTokens.borderRadiusLg,
+        boxShadow: ElevationTokens.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Cole sua URL aqui',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF333333),
+            style: TypographyTokens.labelMedium.copyWith(
+              color: ColorTokens.textPrimary,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: SpacingTokens.inputLabelGap),
           TextField(
             controller: controller,
             decoration: InputDecoration(
               hintText: 'https://exemplo.com/sua-url-muito-longa',
-              hintStyle: TextStyle(color: Colors.grey[400]),
+              hintStyle: TypographyTokens.bodyMedium.copyWith(
+                color: ColorTokens.textTertiary,
+              ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderRadius: BorderRadiusTokens.borderRadiusMd,
+                borderSide: BorderSide(color: ColorTokens.borderPrimary),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: Color(0xFF8A05BE),
+                borderRadius: BorderRadiusTokens.borderRadiusMd,
+                borderSide: BorderSide(
+                  color: ColorTokens.primaryPurple,
                   width: 2,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderRadius: BorderRadiusTokens.borderRadiusMd,
+                borderSide: BorderSide(color: ColorTokens.borderPrimary),
               ),
-              contentPadding: const EdgeInsets.all(16),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: SpacingTokens.inputPaddingHorizontal,
+                vertical: SpacingTokens.inputPaddingVertical,
+              ),
+            ),
+            style: TypographyTokens.bodyMedium.copyWith(
+              color: ColorTokens.textPrimary,
             ),
             keyboardType: TextInputType.url,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: SpacingTokens.gapSm),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
               onPressed: onShorten,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8A05BE),
-                foregroundColor: Colors.white,
+                backgroundColor: ColorTokens.primaryPurple,
+                foregroundColor: ColorTokens.textInverse,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadiusTokens.borderRadiusMd,
                 ),
+                shadowColor: ColorTokens.shadowPrimary,
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.content_cut, size: 20),
-                  SizedBox(width: 8),
+                  SizedBox(width: SpacingTokens.buttonIconGap),
                   Text(
                     'Encurtar URL',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TypographyTokens.button.copyWith(
+                      color: ColorTokens.textInverse,
+                    ),
                   ),
                 ],
               ),

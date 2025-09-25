@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class AliasErrorWidget extends StatelessWidget {
   const AliasErrorWidget({super.key, required this.message, this.onRetry});
@@ -9,50 +10,48 @@ class AliasErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.all(SpacingTokens.paddingLg),
+      margin: EdgeInsets.only(top: SpacingTokens.marginSm),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.red[300]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: ColorTokens.surfacePrimary,
+        borderRadius: BorderRadiusTokens.borderRadiusLg,
+        border: Border.all(color: ColorTokens.errorRedLight),
+        boxShadow: ElevationTokens.cardShadow,
       ),
       child: Column(
         children: [
-          Icon(Icons.error_outline, color: Colors.red[400], size: 48),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, color: ColorTokens.errorRed, size: 48),
+          SizedBox(height: SpacingTokens.gapSm),
           Text(
             'Ops! Algo deu errado',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.red[700],
+            style: TypographyTokens.headline6.copyWith(
+              color: ColorTokens.errorRed,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: SpacingTokens.gapXs),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.red[600], fontSize: 14),
+            style: TypographyTokens.bodySmall.copyWith(
+              color: ColorTokens.errorRed,
+            ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: SpacingTokens.gapSm),
           ElevatedButton(
             onPressed: onRetry,
-
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[400],
-              foregroundColor: Colors.white,
+              backgroundColor: ColorTokens.errorRed,
+              foregroundColor: ColorTokens.textInverse,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadiusTokens.borderRadiusMd,
               ),
             ),
-            child: const Text('Tentar novamente'),
+            child: Text(
+              'Tentar novamente',
+              style: TypographyTokens.button.copyWith(
+                color: ColorTokens.textInverse,
+              ),
+            ),
           ),
         ],
       ),

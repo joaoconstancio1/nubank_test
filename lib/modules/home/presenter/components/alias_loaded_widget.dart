@@ -5,6 +5,7 @@ import 'package:nubank_test/modules/home/presenter/components/alias_title.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/core/utils/url_launcher_helper.dart';
 import 'package:nubank_test/core/utils/loading_overlay.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class AliasLoadedWidget extends StatelessWidget {
   final List<AliasModel> aliases;
@@ -17,14 +18,16 @@ class AliasLoadedWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 4, bottom: 12, top: 16),
+        Padding(
+          padding: EdgeInsets.only(
+            left: SpacingTokens.space4,
+            bottom: SpacingTokens.gapSm,
+            top: SpacingTokens.marginSm,
+          ),
           child: Text(
             'URLs Encurtadas',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF333333),
+            style: TypographyTokens.headline6.copyWith(
+              color: ColorTokens.textPrimary,
             ),
           ),
         ),
@@ -35,17 +38,11 @@ class AliasLoadedWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             final alias = aliases[index];
             return Container(
-              margin: const EdgeInsets.only(bottom: 12),
+              margin: EdgeInsets.only(bottom: SpacingTokens.cardMarginExternal),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: ColorTokens.surfacePrimary,
+                borderRadius: BorderRadiusTokens.borderRadiusMd,
+                boxShadow: ElevationTokens.cardShadow,
               ),
               child: AliasTile(
                 alias: alias,
@@ -84,14 +81,23 @@ class AliasLoadedWidget extends StatelessWidget {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline, color: Colors.white),
-            const SizedBox(width: 8),
-            Expanded(child: Text('Erro ao abrir URL: $error')),
+            Icon(Icons.error_outline, color: ColorTokens.textInverse),
+            SizedBox(width: SpacingTokens.gapXs),
+            Expanded(
+              child: Text(
+                'Erro ao abrir URL: $error',
+                style: TypographyTokens.bodySmall.copyWith(
+                  color: ColorTokens.textInverse,
+                ),
+              ),
+            ),
           ],
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: ColorTokens.errorRed,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusTokens.borderRadiusSm,
+        ),
       ),
     );
   }

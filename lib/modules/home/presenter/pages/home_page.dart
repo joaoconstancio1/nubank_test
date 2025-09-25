@@ -11,6 +11,7 @@ import 'package:nubank_test/modules/home/presenter/components/intro_card.dart';
 import 'package:nubank_test/modules/home/presenter/components/url_input_card.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_cubit.dart';
 import 'package:nubank_test/modules/home/presenter/cubit/alias_state.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -43,30 +44,32 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: ColorTokens.surfaceSecondary,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Encurtador de URL',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style: TypographyTokens.headline6.copyWith(
+            color: ColorTokens.textInverse,
+          ),
         ).withSemantics(label: 'Encurtador de URL - Aplicativo principal'),
-        backgroundColor: const Color(0xFF8A05BE),
+        backgroundColor: ColorTokens.primaryPurple,
         elevation: 0,
         centerTitle: true,
       ),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF8A05BE), Color(0xFFF5F5F5)],
+            colors: [ColorTokens.primaryPurple, ColorTokens.surfaceSecondary],
             stops: [0.0, 0.3],
           ),
         ),
         child: ListView(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(SpacingTokens.pageMargin),
           semanticChildCount: 3,
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: SpacingTokens.marginSm),
 
             IntroCard().withSemantics(label: 'Seção de introdução'),
 

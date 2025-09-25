@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class LoadingOverlay {
   static OverlayEntry? _overlayEntry;
@@ -10,23 +11,25 @@ class LoadingOverlay {
       builder: (context) => Stack(
         children: [
           Positioned.fill(
-            child: Container(color: Colors.black.withValues(alpha: 0.7)),
+            child: Container(
+              color: ColorTokens.neutral900.withValues(alpha: 0.7),
+            ),
           ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF8A05BE)),
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    ColorTokens.primaryPurple,
+                  ),
                   strokeWidth: 3,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: SpacingTokens.gapMd),
                 Text(
                   message,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                  style: TypographyTokens.bodyMedium.copyWith(
+                    color: ColorTokens.textInverse,
                     decoration: TextDecoration.none,
                   ),
                 ),

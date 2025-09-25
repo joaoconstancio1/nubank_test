@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nubank_test/modules/home/data/models/alias_model.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class AliasTile extends StatelessWidget {
   final AliasModel alias;
@@ -10,44 +11,41 @@ class AliasTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(SpacingTokens.paddingSm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(SpacingTokens.paddingXs),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8A05BE).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: ColorTokens.hoverPurpleLight,
+                  borderRadius: BorderRadiusTokens.borderRadiusSm,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.link,
                   size: 20,
-                  color: Color(0xFF8A05BE),
+                  color: ColorTokens.primaryPurple,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: SpacingTokens.gapSm),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'URL Encurtada',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w500,
+                      style: TypographyTokens.overline.copyWith(
+                        color: ColorTokens.textSecondary,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: SpacingTokens.space2),
                     Text(
                       alias.short,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF8A05BE),
+                      style: TypographyTokens.bodyMedium.copyWith(
+                        color: ColorTokens.primaryPurple,
+                        fontWeight: TypographyTokens.fontWeightSemiBold,
                       ),
                     ),
                   ],
@@ -55,32 +53,41 @@ class AliasTile extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8A05BE),
-                  borderRadius: BorderRadius.circular(8),
+                  color: ColorTokens.primaryPurple,
+                  borderRadius: BorderRadiusTokens.borderRadiusSm,
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.open_in_browser, color: Colors.white),
+                  icon: Icon(
+                    Icons.open_in_browser,
+                    color: ColorTokens.textInverse,
+                  ),
                   onPressed: onOpen,
                   tooltip: 'Abrir URL original',
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: SpacingTokens.gapSm),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(SpacingTokens.paddingSm),
             decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(8),
+              color: ColorTokens.surfaceSecondary,
+              borderRadius: BorderRadiusTokens.borderRadiusSm,
             ),
             child: Row(
               children: [
-                Icon(Icons.language, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
+                Icon(
+                  Icons.language,
+                  size: 16,
+                  color: ColorTokens.textSecondary,
+                ),
+                SizedBox(width: SpacingTokens.gapXs),
                 Expanded(
                   child: Text(
                     alias.original,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    style: TypographyTokens.bodySmall.copyWith(
+                      color: ColorTokens.textSecondary,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

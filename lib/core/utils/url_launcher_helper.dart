@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class UrlLauncherHelper {
   static Future<void> openUrl(BuildContext context, String url) async {
@@ -20,11 +21,16 @@ class UrlLauncherHelper {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erro ao abrir URL: $e'),
-            backgroundColor: Colors.red,
+            content: Text(
+              'Erro ao abrir URL: $e',
+              style: TypographyTokens.bodySmall.copyWith(
+                color: ColorTokens.textInverse,
+              ),
+            ),
+            backgroundColor: ColorTokens.errorRed,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadiusTokens.borderRadiusSm,
             ),
           ),
         );

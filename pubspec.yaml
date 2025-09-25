@@ -31,6 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  nubank_design_system:
+    path: packages/nubank_design_system
+
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.1
   dio: ^5.0.0

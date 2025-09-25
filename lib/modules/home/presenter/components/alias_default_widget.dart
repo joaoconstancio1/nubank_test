@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class AliasDefaultWidget extends StatelessWidget {
   const AliasDefaultWidget({super.key});
@@ -6,29 +7,21 @@ class AliasDefaultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(32),
-      margin: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.all(SpacingTokens.paddingXl),
+      margin: EdgeInsets.only(top: SpacingTokens.marginSm),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: ColorTokens.surfacePrimary,
+        borderRadius: BorderRadiusTokens.borderRadiusLg,
+        boxShadow: ElevationTokens.cardShadow,
       ),
       child: Column(
         children: [
-          Icon(Icons.link_off, size: 48, color: Colors.grey[400]),
-          const SizedBox(height: 16),
+          Icon(Icons.link_off, size: 48, color: ColorTokens.textQuaternary),
+          SizedBox(height: SpacingTokens.gapSm),
           Text(
             'Nenhuma URL encurtada ainda',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+            style: TypographyTokens.bodyLarge.copyWith(
+              color: ColorTokens.textSecondary,
             ),
           ),
         ],

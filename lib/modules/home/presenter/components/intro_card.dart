@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nubank_design_system/nubank_design_system.dart';
 
 class IntroCard extends StatelessWidget {
   const IntroCard({super.key});
@@ -6,34 +7,30 @@ class IntroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 32),
+      padding: EdgeInsets.all(SpacingTokens.paddingLg),
+      margin: EdgeInsets.only(bottom: SpacingTokens.marginXl),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: ColorTokens.surfacePrimary,
+        borderRadius: BorderRadiusTokens.borderRadiusLg,
+        boxShadow: ElevationTokens.cardShadow,
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(SpacingTokens.paddingSm),
             decoration: BoxDecoration(
-              color: const Color(0xFF8A05BE).withAlpha(25),
-              borderRadius: BorderRadius.circular(12),
+              color: ColorTokens.hoverPurpleLight,
+              borderRadius: BorderRadiusTokens.borderRadiusMd,
             ),
-            child: const Icon(Icons.link, size: 32, color: Color(0xFF8A05BE)),
+            child: Icon(Icons.link, size: 32, color: ColorTokens.primaryPurple),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: SpacingTokens.gapSm),
+          Text(
             'Transforme seus links longos em URLs curtas e elegantes',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, color: Colors.grey, height: 1.4),
+            style: TypographyTokens.bodyMedium.copyWith(
+              color: ColorTokens.textSecondary,
+            ),
           ),
         ],
       ),
